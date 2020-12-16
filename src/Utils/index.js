@@ -1,7 +1,5 @@
 import _ from "lodash";
 
-import DateTime from "./DateTime/DateTime";
-
 export function isEmpty(value) {
 
     if (_.isObject(value)) {
@@ -17,7 +15,6 @@ export function isEmpty(value) {
     }
 
     return (
-        // _.isEmpty(value) ||
         _.isNull(value) ||
         _.isUndefined(value)
     )
@@ -88,7 +85,7 @@ function sortByKey(obj) {
 export default {
     isEmpty,
     deepCompareObj,
-    DateTime,
+    // DateTime,
     isMobileDevice,
     copyValue,
     checkShouldComponentUpdate,

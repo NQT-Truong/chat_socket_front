@@ -38,16 +38,6 @@
     }
 }
 
-.container {
-
-    @media (min-width: $grid-breakpoints-xxl) {
-        max-width: $grid-breakpoints-xxl;
-    }
-
-    @media (min-width: $grid-breakpoints-xxxl) {
-        max-width: $grid-breakpoints-xxxl;
-    }
-}
 
 .opacity-1 {
     opacity: 1 !important;
@@ -102,8 +92,6 @@
     display: -webkit-box;
     word-wrap: break-word;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-    line-clamp: 1;
     text-overflow: ellipsis;
 }
 
@@ -113,8 +101,6 @@
     display: -webkit-box;
     word-wrap: break-word;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
     text-overflow: ellipsis;
 }
 
@@ -124,8 +110,6 @@
     display: -webkit-box;
     word-wrap: break-word;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
     text-overflow: ellipsis;
 }
 
@@ -133,30 +117,30 @@
     border-radius: 0 !important;
 }
 
-.custom-scrollbar {
-    @media (min-width: $grid-breakpoints-lg) {
-        &::-webkit-scrollbar {
-            width: 8px;
-            height: 10px;
-        }
-
-        /* Track */
-        &::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        /* Handle */
-        &::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 10px;
-        }
-
-        /* Handle on hover */
-        &::-webkit-scrollbar-thumb:hover {
-            background: #a8a8a8;
-        }
-    }
-}
+//.custom-scrollbar {
+//    @media (min-width: $grid-breakpoints-lg) {
+//        &::-webkit-scrollbar {
+//            width: 8px;
+//            height: 10px;
+//        }
+//
+//        /* Track */
+//        &::-webkit-scrollbar-track {
+//            background: #f1f1f1;
+//        }
+//
+//        /* Handle */
+//        &::-webkit-scrollbar-thumb {
+//            background: #c1c1c1;
+//            border-radius: 10px;
+//        }
+//
+//        /* Handle on hover */
+//        &::-webkit-scrollbar-thumb:hover {
+//            background: #a8a8a8;
+//        }
+//    }
+//}
 
 .view {
     cursor: inherit !important;

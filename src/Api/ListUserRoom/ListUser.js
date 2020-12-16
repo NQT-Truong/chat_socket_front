@@ -1,11 +1,11 @@
 import rootAPI, {_rootPath} from "../rootAPI";
 
 const path = {
-    mess: `${_rootPath}/tinnhan`,
+    listUser: `${_rootPath}/list-user-room`,
 };
 
-function getListMess(data, callback) {
-    rootAPI({withToken: false}).get(path.mess, {
+function getListUser(data, callback) {
+    rootAPI({withToken: false}).get(path.listUser, {
         params: data
     })
         .then(res => {
@@ -18,5 +18,5 @@ function getListMess(data, callback) {
 }
 
 export default {
-    getListMess
+    getListUser
 };

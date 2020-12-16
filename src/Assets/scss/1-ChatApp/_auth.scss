@@ -1,0 +1,67 @@
+.auth-page {
+  background-size: cover;
+  min-height: 100vh;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ECA2B8;
+
+  .frame_card {
+    background-color: antiquewhite;
+
+    .form-container {
+      .md-form{
+        //margin-top: 5px
+      }
+      .fa-user {
+        color: brown;
+      }
+
+      .fa-lock {
+        color: brown;
+      }
+
+      .fa-envelope {
+        color: brown;
+      }
+
+      h4 {
+        font-style: italic;
+        font-family: "Bodoni MT";
+        font-weight: inherit;
+        font-size: 40px;
+      }
+
+      label, input {
+        font-family: "Bodoni MT";
+      }
+
+      padding: 30px;
+      padding-bottom: 0px !important;
+      width: 350px;
+    }
+
+    .bg-gradient-success {
+      background-color: blueviolet;
+      border-radius: 20px;
+
+      span {
+        font-family: "Bodoni MT";
+      }
+    }
+  }
+
+  &:before {
+    content: " ";
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: black;
+    width: 100%;
+    height: 100%;
+    opacity: 0.6;
+  }
+
+
+}
