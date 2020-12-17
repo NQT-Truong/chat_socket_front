@@ -191,7 +191,8 @@ const Dashboard = () => {
 
     const handleLeaveRoom = () => {
         socket.emit("leave_room", roomName);
-        setRoomName("")
+        setListUserInRoom([]);
+        setRoomName("");
     }
     //_________________________________//
 
@@ -215,7 +216,7 @@ const Dashboard = () => {
                                     return prev;
                                 })}
                                 material
-                                hint="Mã room"
+                                hint="Mã phòng"
                                 containerClassName=" mb-3 mt-0"
                                 value={dtRoom}
                                 append={
@@ -229,18 +230,21 @@ const Dashboard = () => {
                                 }
                             />
                             <div className="mb-2">
-                                <text className="text-info">
-                                    Username: <span
-                                    style={{color: "", fontWeight: "bold", fontSize: "16px"}}>{user.username}</span>
-                                </text>
-                                <div>
-                                    Code room: {roomName}
+                                <div className="d-flex justify-content-between align-items-center">
+                                    <div>Tài khoản: <span style={{fontWeight: "bold", fontSize: "16px"}}>{user.username}</span></div>
+                                    <MDBIcon icon="user-circle" size='lg'/>
+                                </div>
+                                <div className='d-flex justify-content-between align-items-center mt-2'>
+                                    <div>
+                                        Mã phòng: <span style={{fontWeight: "bold", fontSize: "16px"}}>{roomName}</span>
+                                    </div>
+                                    <MDBIcon icon="key" size='lg'/>
                                 </div>
                             </div>
                             <MDBCard>
                                 <div className="d-flex align-items-center justify-content-center border-bottom">
                                     <div className="font-weight-bold m-0 p-2">
-                                        Danh sách online <MDBIcon icon="circle" className="green-text" size="sm"/>
+                                        Danh sách trực tuyến <MDBIcon icon="circle" className="green-text" size="sm"/>
                                     </div>
                                 </div>
                                 <MDBCardBody>
@@ -338,18 +342,19 @@ const Dashboard = () => {
                             <MDBCard className="mt-2">
                                 <div className="d-flex align-items-center justify-content-center border-bottom">
                                     <div className="font-weight-bold m-0 p-2 text-center">
-                                        Mọi người trong: {roomName}
-                                        <MDBIcon icon="circle" className="green-text ml-1" size="sm"/>
+                                        <MDBIcon icon="users" className="pink-text mr-1" size="lg"/>
+                                        Mọi người trong phòng: {roomName}
                                     </div>
                                 </div>
                                 <MDBCardBody>
                                     <div className="px-2">
                                         {
                                             listUserInRoom?.map((data) => (
-                                                <div className="border-bottom p-2">
+                                                <div className="border-bottom p-2 justify-content-between d-flex">
                                                     {
                                                         data
                                                     }
+                                                    <MDBIcon icon="user-secret" size='2x'/>
                                                 </div>
                                             ))
                                         }
