@@ -1,15 +1,13 @@
 import React, {useEffect, useState} from "react";
-import axios from "axios"
 import {MDBCard, MDBCardBody, MDBInput} from "mdbreact";
 import {notification} from "antd";
 
-import {shallowEqual, useDispatch, useSelector} from "react-redux";
+import { useDispatch} from "react-redux";
 import {userChange} from "../../Redux/Actions/userAction";
 
 import ButtonLoading from "../../Component/CustomTag/ButtonLoading";
 
 import apiAuth from "../../Api/Auth/Auth"
-import io from "socket.io-client";
 
 /**
  *
@@ -19,7 +17,6 @@ import io from "socket.io-client";
 function Auth() {
 
     // define
-    const user = useSelector(state => state.user, shallowEqual);
     const dispatch = useDispatch();
 
     const [isLoading, setIsLoading] = React.useState(false);

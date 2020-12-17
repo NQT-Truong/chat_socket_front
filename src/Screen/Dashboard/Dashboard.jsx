@@ -49,7 +49,7 @@ const Dashboard = () => {
     useEffect(() => {
         const socket = io
         (
-            "http://localhost:3333",
+            "http://18.139.208.99:3333",
             {
                 transports: ['websocket',
                     'flashsocket', 'htmlfile', 'xhr-polling', 'jsonp-polling', 'polling']
