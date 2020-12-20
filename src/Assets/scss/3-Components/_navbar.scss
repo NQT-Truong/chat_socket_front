@@ -1,6 +1,10 @@
-.dashboard_page {
-  display: flex;
-  justify-content: center;
+.custom-navbar {
+
+  padding: 10px;
+
+  @media (min-width: 576px) {
+    padding: 15px 25px 15px 25px;
+  }
 
   .btn-toggle-sidebar {
     width: 40px;
@@ -17,33 +21,13 @@
     }
   }
 
-  .box-chat {
-    height: 78vh;
-    background-color: #4d454f;
-
-    .frame-content {
-      overflow-y: auto;
-      scroll-behavior: smooth;
-    }
+  .site-identified-name {
+    display: flex;
+    align-items: center;
+    margin-left: 15px;
+    font-size: 1.2rem;
+    color: #484848 !important;
   }
 
-  ::-webkit-scrollbar {
-    width: 10px;
-  }
-
-  ::-webkit-scrollbar-track {
-    border-radius: 10px;
-  }
-
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: gray;
-    border-radius: 10px;
-  }
-
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #b30000;
-  }
-
+  display: flex;
 }

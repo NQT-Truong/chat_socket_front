@@ -7,15 +7,18 @@ import {
     MDBIcon
 } from "mdbreact";
 
-import {Modal, notification} from 'antd';
+import {notification} from 'antd';
 
 import {useSelector, shallowEqual, useDispatch} from "react-redux";
-import {userClear} from "../../Redux/Actions/userAction";
 
 import io from "socket.io-client";
-import Notify from "../../Utils/Notify/Notify";
 import apiMess from "../../Api/Message/Message";
 import apiListUser from "../../Api/ListUserRoom/ListUser";
+import Sidebar from "../../Component/Layouts/Sidebar/Sidebar";
+
+import {toggleSidebar} from "../../Redux/Actions/appActions";
+import Main from "../../Component/Layouts/Main/Main";
+import Content from "../../Component/Layouts/Content/Content";
 
 
 const Dashboard = () => {
@@ -23,16 +26,15 @@ const Dashboard = () => {
     // define
     const user = useSelector(state => state.user, shallowEqual);
     const dispatch = useDispatch();
+    const app = useSelector(state => state.app);
 
     // state
     const [data, setData] = useState("");
     const [messAll, setMessAll] = useState([])
-    // const [isSend, setIsSend] = useState(false);
     const [listOnline, setListOnline] = useState([]);
     const [socket, setSocket] = useState(null);
     const [dtRoom, setDtRoom] = useState("");
     const [roomName, setRoomName] = useState("");
-    const [isOpenModal, setIsOpenModal] = useState(false);
     const [listUserInRoom, setListUserInRoom] = useState([]);
 
     const scrollToBottom = () => {
@@ -163,211 +165,107 @@ const Dashboard = () => {
         setData(e.target.value)
     };
 
-    const handleLogOut = () => {
-        dispatch(userClear());
-        socket.emit("logout", user.username);
-        Notify.success('Thông báo', 'Đăng xuất thành công');
-    }
-
-    const handleCreateRoom = (dt) => {
-        socket.emit("create_room", {roomName: dtRoom, username: user.username});
-        setDtRoom("");
-        // setListUserInRoom(prev => [...prev, ListUserRoom.username]);
-        setMessAll([])
-        // tinh nang click vao ten de nhan tin
-        // if (dt) {
-        //     let data = {
-        //         socketId: dt,
-        //         key: "single"
-        //     }
-        //     socket.emit("create_room", data);
-        //     listUserInRoom.push(ListUserRoom.username);
-        // } else {
-        //     socket.emit("create_room", dtRoom);
-        //     setDtRoom("");
-        //     listUserInRoom.push(ListUserRoom.username);
-        // }
-    };
-
-    const handleLeaveRoom = () => {
-        socket.emit("leave_room", roomName);
-        setListUserInRoom([]);
-        setRoomName("");
-    }
+    const handleToggleSidebar = React.useCallback(() => {
+        dispatch(toggleSidebar());
+    }, [dispatch])
     //_________________________________//
 
     return (
-        <div className="dashboard_page px-3 pt-5 justify-content-between flex-column">
-            <MDBRow className="w-100 h-100">
-                <Modal
-                    title="Thông báo"
-                    visible={isOpenModal}
-                    onOk={() => handleLogOut()}
-                    onCancel={() => setIsOpenModal(false)}
-                >
-                    <h5>Đăng xuất?</h5>
-                </Modal>
-                <MDBCol>
-                    <div className="d-flex justify-content-center">
-                        <MDBCol lg={3}>
-                            <MDBInputGroup
-                                onChange={(e) => setDtRoom(prev => {
-                                    prev = e.target.value;
-                                    return prev;
-                                })}
-                                material
-                                hint="Mã phòng"
-                                containerClassName=" mb-3 mt-0"
-                                value={dtRoom}
-                                append={
-                                    <MDBBtn
-                                        className="z-depth-0 m-o px-3 py-1 ml-3"
-                                        onClick={() => handleCreateRoom()}
-                                        disabled={dtRoom === ""}
-                                    >
-                                        <MDBIcon icon="plus" className="mr-1"/>Tạo/Nhập
-                                    </MDBBtn>
-                                }
-                            />
-                            <div className="mb-2">
+        <div className={`wrapper ${app.theme} frame-container`}>
+            <Main>
+                <Content>
+                    <MDBCol className="dashboard_page justify-content-between flex-column">
+                        <MDBBtn className='bg-white round btn-toggle-sidebar my-1' color='light' onClick={handleToggleSidebar}>
+                            <MDBIcon icon="bars" className="text-default"/>
+                        </MDBBtn>
+                        <div className="d-flex mb-1 justify-content-center">
+                            <div className="mb-1">
                                 <div className="d-flex justify-content-between align-items-center">
-                                    <div>Tài khoản: <span style={{fontWeight: "bold", fontSize: "16px"}}>{user.username}</span></div>
-                                    <MDBIcon icon="user-circle" size='lg'/>
+                                    <div>Tài khoản: <span style={{fontWeight: "bold", fontSize: "16px"}} className="ml-2">{user.username}</span></div>
+                                    {/*<MDBIcon icon="user-circle" size='lg'/>*/}
                                 </div>
-                                <div className='d-flex justify-content-between align-items-center mt-2'>
+                                <div className='d-flex justify-content-between align-items-center'>
                                     <div>
-                                        Mã phòng: <span style={{fontWeight: "bold", fontSize: "16px"}}>{roomName}</span>
+                                        Mã phòng: <span style={{fontWeight: "bold", fontSize: "16px"}} className="ml-2">{roomName}</span>
                                     </div>
-                                    <MDBIcon icon="key" size='lg'/>
+                                    {/*<MDBIcon icon="key" size='lg'/>*/}
                                 </div>
                             </div>
-                            <MDBCard>
-                                <div className="d-flex align-items-center justify-content-center border-bottom">
-                                    <div className="font-weight-bold m-0 p-2">
-                                        Danh sách trực tuyến <MDBIcon icon="circle" className="green-text" size="sm"/>
-                                    </div>
-                                </div>
-                                <MDBCardBody>
-                                    <div className="px-2 data_online">
-                                        {
-                                            listOnline?.map((data) => {
-                                                if (data.name === user.username) return null;
-                                                return (
-                                                    <div className="border-bottom p-2"
-                                                        // onClick={() => handleCreateRoom(data.id)}
-                                                    >
-                                                        {
-                                                            data.name
-                                                        }
-                                                    </div>
-                                                )
-                                            })
-                                        }
-                                    </div>
-                                </MDBCardBody>
-                            </MDBCard>
-                        </MDBCol>
-                        {/*{*/}
-                        {/*    messAll.length === 0 ? <div id="temp"/> :*/}
-                        <MDBCol lg={6}>
-                            <MDBCard className="box-chat">
-                                <MDBCardBody className="p-3 d-flex justify-content-between frame-content">
+                        </div>
+                        <MDBRow className="justify-content-center">
+                            <MDBCol className="pt-2" lg={8} sm={12}>
+                                <div className="d-flex justify-content-center">
                                     <MDBCol>
-                                        {
-                                            messAll.map((dt) => (
-                                                <MDBRow className="mb-4">
-                                                    <MDBCol className="p-0 text-white text-left">
-                                                        <div>
+                                        <MDBCard className="box-chat">
+                                            <MDBCardBody className="p-3 d-flex justify-content-between frame-content">
+                                                <MDBCol>
+                                                    {
+                                                        messAll.map((dt) => (
+                                                            <MDBRow className="mb-4">
+                                                                <MDBCol className="p-0 text-white text-left">
+                                                                    <div>
                                                             <span
                                                                 className={`bg-white  p-2 rounded ${dt.id === user.username ? "d-none" : "text-dark"}`}>
                                                                 {dt.id !== user.username ? dt.data : ""}
                                                             </span>
-                                                        </div>
-                                                        <span
-                                                            className={`${dt.id === user.username ? "d-none" : "font-italic small"}`}>{dt.id}</span>
-                                                    </MDBCol>
-                                                    <MDBCol className="w-50 text-white text-right p-0">
+                                                                    </div>
+                                                                    <span
+                                                                        className={`${dt.id === user.username ? "d-none" : "font-italic small"}`}>{dt.id}</span>
+                                                                </MDBCol>
+                                                                <MDBCol className="w-50 text-white text-right p-0">
                                                         <span
                                                             className={`bg-default p-2 rounded ${dt.id !== user.username ? "d-none" : ""}`}>
                                                             {dt.id === user.username ? dt.data : ""}
                                                         </span>
-                                                    </MDBCol>
-                                                </MDBRow>
-                                            ))
-                                        }
-                                        <div id="temp"/>
-                                    </MDBCol>
-                                </MDBCardBody>
-                                <form onSubmit={() => sendMess()} className="p-1 px-2 ">
-                                    <MDBInputGroup
-                                        onChange={(e) => handleSend(e)}
-                                        material
-                                        className="text-white"
-                                        hint="Nhập tin nhắn"
-                                        containerClassName="mb-3 mt-0"
-                                        value={data}
-                                        append={
-                                            <MDBBtn
-                                                type="submit"
-                                                className="z-depth-0 px-3 py-2 mx-2 rounded"
-                                                onClick={() => sendMess()}
-                                                disabled={data === ""}
-                                            >
-                                                <MDBIcon icon="paper-plane"/>
-                                            </MDBBtn>
-                                        }
-                                    />
-                                </form>
-                            </MDBCard>
-                        </MDBCol>
-                        {/*}*/}
-                        <MDBCol lg={3}>
-                            <div className="d-flex justify-content-center">
-                                <MDBBtn
-                                    className="z-depth-0 m-o px-3 py-2 mr-2"
-                                    onClick={() => handleLeaveRoom()}
-                                    disabled={roomName === ""}
-                                >
-                                    Rời phòng <MDBIcon icon="angle-double-right" className="ml-1"/>
-                                </MDBBtn>
-
-                                <MDBBtn
-                                    className="z-depth-0 m-o px-3 py-2"
-                                    color="primary"
-                                    onClick={() => setIsOpenModal(true)}
-                                >
-                                    Đăng xuất <MDBIcon icon="sign-out-alt" className="ml-1"/>
-                                </MDBBtn>
-                            </div>
-                            <MDBCard className="mt-2">
-                                <div className="d-flex align-items-center justify-content-center border-bottom">
-                                    <div className="font-weight-bold m-0 p-2 text-center">
-                                        <MDBIcon icon="users" className="pink-text mr-1" size="lg"/>
-                                        Mọi người trong phòng: {roomName}
-                                    </div>
-                                </div>
-                                <MDBCardBody>
-                                    <div className="px-2">
-                                        {
-                                            listUserInRoom?.map((data) => (
-                                                <div className="border-bottom p-2 justify-content-between d-flex">
-                                                    {
-                                                        data
+                                                                </MDBCol>
+                                                            </MDBRow>
+                                                        ))
                                                     }
-                                                    <MDBIcon icon="user-secret" size='2x'/>
-                                                </div>
-                                            ))
-                                        }
-                                    </div>
-                                </MDBCardBody>
-                            </MDBCard>
-                        </MDBCol>
-                    </div>
-                </MDBCol>
-            </MDBRow>
-            <div className="d-flex justify-content-end">
-                <span className="font-italic" style={{color: "#a9014b"}}>@Developer: Quang Truong</span>
-            </div>
+                                                    <div id="temp"/>
+                                                </MDBCol>
+                                            </MDBCardBody>
+                                            <form onSubmit={() => sendMess()} className="p-1 px-2 ">
+                                                <MDBInputGroup
+                                                    onChange={(e) => handleSend(e)}
+                                                    material
+                                                    className="text-white"
+                                                    hint="Nhập tin nhắn"
+                                                    containerClassName="mb-3 mt-0"
+                                                    value={data}
+                                                    append={
+                                                        <MDBBtn
+                                                            type="submit"
+                                                            className="z-depth-0 px-3 py-2 mx-2 rounded"
+                                                            onClick={() => sendMess()}
+                                                            disabled={data === ""}
+                                                        >
+                                                            <MDBIcon icon="paper-plane"/>
+                                                        </MDBBtn>
+                                                    }
+                                                />
+                                            </form>
+                                        </MDBCard>
+                                    </MDBCol>
+                                </div>
+                            </MDBCol>
+                        </MDBRow>
+                        <div className="d-flex justify-content-end">
+                            <span className="font-italic" style={{color: "#a9014b"}}>@Developer: Quang Truong</span>
+                        </div>
+                    </MDBCol>
+                </Content>
+            </Main>
+            <Sidebar
+                socket={socket}
+                dtRoom={dtRoom}
+                setDtRoom={setDtRoom}
+                setMessAll={setMessAll}
+                listOnline={listOnline}
+                roomName={roomName}
+                listUserInRoom={listUserInRoom}
+                setListUserInRoom={setListUserInRoom}
+                setRoomName={setRoomName}
+            />
         </div>
     )
 }

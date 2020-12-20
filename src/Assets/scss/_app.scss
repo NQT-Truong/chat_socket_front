@@ -8,6 +8,16 @@
 @import "2-Mixin/event";
 @import "2-Mixin/button";
 @import "2-Mixin/dropdown";
+
+@import "3-Components/wrapper";
+@import "3-Components/sidebar";
+@import "3-Components/main";
+@import "3-Components/navbar";
+@import "3-Components/content";
+@import "3-Components/footer";
+@import "3-Components/small-talk";
+
+@import "4-Variables/app";
 //body {
 //  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 //  font-size: 14px;

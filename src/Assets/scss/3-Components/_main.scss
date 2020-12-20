@@ -1,0 +1,16 @@
+.main {
+    width: 100%;
+
+    height: 100%;
+
+    padding: 0;
+
+    transition: padding .3s;
+
+    &.sidebar-open {
+        @media (min-width: 768px) {
+            padding-left: 260px;
+        }
+    }
+
+}

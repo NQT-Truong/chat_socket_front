@@ -6,7 +6,7 @@ const dashboardRoutes = {
     name:"Dash board",
     children: [
         {
-            path: "/",
+            path: "/chat-home",
             name: "Dashboard",
             component: Dashboard
         }

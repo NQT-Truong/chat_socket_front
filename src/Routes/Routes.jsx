@@ -9,7 +9,7 @@ import {BrowserRouter as Router, Route, Switch, Redirect} from "react-router-dom
 
 import {useSelector, shallowEqual} from "react-redux";
 
-const childRoutes = (routes) =>
+const childRoutes = ( routes) =>
     routes.map(({children, path: root_path, component: Component, isDashboardRaw}, index) =>
         children ? (
             // Route item with children
@@ -57,7 +57,7 @@ const Routes = React.memo(() => {
                         childRoutes(authRoutes)
                 }
                 <Route
-                    render={() => <Redirect to={`${isLogin ? "/" : "/auth"}`}/>}
+                    render={() => <Redirect to={`${isLogin ? "/chat-home" : "/auth"}`}/>}
                 />
             </Switch>
         </Router>

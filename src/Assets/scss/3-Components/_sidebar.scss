@@ -1,0 +1,139 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: - 260px;;
+  height: 100vh;
+  width: 260px;;
+  //background-image: url('/img/background/sidebar-background.jpg');
+  background-size: cover;
+  color: white;
+  padding: 15px;
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  transition: left .3s;
+
+  .title-logo {
+    font-size: 1.5rem;
+  }
+
+  .link-reset {
+    color: unset;
+  }
+
+  .no-hover {
+    &:hover {
+      background-color: unset !important;
+    }
+  }
+
+  .code-room {
+    color: white
+  }
+
+  .card_container {
+    background-color: #62664e;
+    min-height: 60px;
+
+    .card_action {
+      cursor: pointer;
+    }
+
+    .MuiButtonBase-root {
+      padding-right: 0 !important;
+    }
+
+    .expand_open {
+      transform: rotate(180deg);
+      padding-left: 0;
+    }
+
+    .card_content {
+      margin-top: -10px;
+      padding: 8px !important;
+
+      .data_online {
+        cursor: pointer;
+        color: white;
+      }
+
+      .icon-user-room {
+        color: #fde17e;
+      }
+
+      .Ripple-parent {
+        height: 20px;
+        width: 58px
+      }
+    }
+  }
+
+  .MuiListItem-root {
+    border-radius: 3px;
+    overflow: hidden;
+    padding: 10px 16px;
+    margin: 10px 0 10px 0;
+
+    transition: background-color .3s;
+
+    &:hover {
+      outline: none;
+      box-shadow: none;
+      background-color: rgba(200, 200, 200, 0.2);
+    }
+
+    &.active {
+      box-shadow: 0 12px 20px -10px rgba(0, 172, 193, .28), 0 4px 20px 0 rgba(0, 0, 0, .12), 0 7px 8px -5px rgba(0, 172, 193, .2);
+      background-color: #00acc1;
+    }
+
+    .MuiSvgIcon-root {
+      color: white;
+    }
+
+    .MuiTypography-body1 {
+      font-size: 1em !important;
+    }
+  }
+
+  &:before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: .7;
+    background-color: #000000;
+    z-index: -1;
+  }
+
+  &.open {
+    left: 0;
+    box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.42), 0 4px 25px 0px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2);
+  }
+
+}
+
+.sidebar-overlay {
+  position: fixed;
+  background-color: black;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+
+  transition: visibility .3s, opacity .3s;
+
+  visibility: hidden;
+
+  &.show {
+    visibility: visible;
+    opacity: 0.3;
+  }
+
+}
