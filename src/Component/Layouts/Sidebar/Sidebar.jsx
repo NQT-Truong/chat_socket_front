@@ -1,20 +1,19 @@
 import React, {useState} from 'react';
 
 import {
-    List, ListItem, ListItemIcon, ListItemText, Divider, Card, Collapse, IconButton, CardContent, CardActions
+    List, ListItem, ListItemIcon, ListItemText,
+    Divider, Card, Collapse, IconButton, CardContent, CardActions
 } from "@material-ui/core";
-
+import {Avatar, Image, Modal, notification} from "antd";
+import {MDBBtn, MDBIcon, MDBInputGroup} from "mdbreact";
 import ScrollableFeed from 'react-scrollable-feed';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import {shallowEqual, useDispatch, useSelector} from "react-redux";
+import {toggleSidebar} from "../../../Redux/Actions/appActions";
+import {userChange, userClear} from "../../../Redux/Actions/userAction";
 
 import logo from "../../../Assets/img/logo.ico"
-
-import {toggleSidebar} from "../../../Redux/Actions/appActions";
-import {MDBBtn, MDBIcon, MDBInputGroup} from "mdbreact";
-import {Modal} from "antd";
-import {userClear} from "../../../Redux/Actions/userAction";
 import Notify from "../../../Utils/Notify/Notify";
 
 /**
@@ -22,7 +21,7 @@ import Notify from "../../../Utils/Notify/Notify";
  * @returns {*}
  * @constructor
  */
-const Sidebar = ({socket, dtRoom, setDtRoom, setMessAll, listOnline, roomName, listUserInRoom, setRoomName, setListUserInRoom}) => {
+const Sidebar = ({socket, dtRoom, setDtRoom, setMessAll, listOnline, roomName, listUserInRoom, setRoomName, setListUserInRoom, avatar, setAvatar}) => {
 
     const app = useSelector(state => state.app);
     const user = useSelector(state => state.user, shallowEqual);
@@ -37,7 +36,6 @@ const Sidebar = ({socket, dtRoom, setDtRoom, setMessAll, listOnline, roomName, l
     const [expandCardListOnline, setExpandCardListOnline] = useState(false);
     const [expandCardUserInRoom, setExpandCardUserInRoom] = useState(false);
 
-
     // function
     const handleLogOut = () => {
         dispatch(userClear());
@@ -45,10 +43,16 @@ const Sidebar = ({socket, dtRoom, setDtRoom, setMessAll, listOnline, roomName, l
         Notify.success('Thông báo', 'Đăng xuất thành công');
     };
 
-    const handleCreateRoom = (dt) => {
-        socket.emit("create_room", {roomName: dtRoom, username: user.username});
+    const handleCreateRoom = () => {
+        socket.emit("create_room", {
+            roomName: dtRoom,
+            user: {
+                username: user.username,
+                avatar: user.avatar,
+                uuid: user.uuid
+            }
+        });
         setDtRoom("");
-        // setListUserInRoom(prev => [...prev, ListUserRoom.username]);
         setMessAll([])
         // tinh nang click vao ten de nhan tin
         // if (dt) {
@@ -81,6 +85,31 @@ const Sidebar = ({socket, dtRoom, setDtRoom, setMessAll, listOnline, roomName, l
         }
     };
 
+    // Encode base64 image
+    const getBase64 = (file, callback) => {
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            callback(reader.result)
+        };
+    };
+
+    // Upload and change image
+    const handleChangeImage = (e) => {
+        if (!e.target.files[0]) return null;
+        getBase64(e.target.files[0], (result) => {
+            socket.emit("change-avt", {
+                user: user.uuid,
+                avatar: result
+            });
+            setAvatar(result);
+            dispatch(userChange({...user, avatar: result}));
+            notification.success({
+                title: "Thông báo",
+                description: "Cập nhật ảnh thành công"
+            })
+        });
+    };
 
     return (
         <>
@@ -131,7 +160,7 @@ const Sidebar = ({socket, dtRoom, setDtRoom, setMessAll, listOnline, roomName, l
                             }
                         />
 
-                        <ScrollableFeed>
+                        <ScrollableFeed className="scroll-card">
                             <Card className="card_container mt-2">
                                 <CardActions
                                     disableSpacing
@@ -155,12 +184,15 @@ const Sidebar = ({socket, dtRoom, setDtRoom, setMessAll, listOnline, roomName, l
                                                 listOnline?.map((data) => {
                                                     if (data.name === user.username) return null;
                                                     return (
-                                                        <div className="border-bottom p-2 "
+                                                        <div
+                                                            className="border-bottom p-2 d-flex justify-content-between align-items-center"
                                                             // onClick={() => handleCreateRoom(data.id)}
                                                         >
-                                                            {
-                                                                data.name
-                                                            }
+                                                            {data.name}
+                                                            <Avatar
+                                                                className='bg-white d-flex justify-content-center align-items-center'
+                                                                src={<Image src={data.avatar ? `${data.avatar}` : logo}/>}
+                                                            />
                                                         </div>
                                                     )
                                                 })
@@ -170,7 +202,7 @@ const Sidebar = ({socket, dtRoom, setDtRoom, setMessAll, listOnline, roomName, l
                                 </Collapse>
                             </Card>
 
-                            <Card className="card_container mt-2">
+                            <Card className="card_container my-2">
                                 <CardActions
                                     disableSpacing
                                     className="d-flex justify-content-between card_action text-white"
@@ -192,8 +224,11 @@ const Sidebar = ({socket, dtRoom, setDtRoom, setMessAll, listOnline, roomName, l
                                             {
                                                 listUserInRoom?.map((data) => (
                                                     <div className="border-bottom p-2 justify-content-between d-flex">
-                                                        <span className="text-white">{data}</span>
-                                                        <MDBIcon icon="user-secret icon-user-room" size='2x'/>
+                                                        <span className="text-white">{data.username}</span>
+                                                        <Avatar
+                                                            className='bg-white d-flex justify-content-center align-items-center'
+                                                            src={<Image src={data.avatar ? `${data.avatar}` : logo}/>}
+                                                        />
                                                     </div>
                                                 ))
                                             }
@@ -205,15 +240,25 @@ const Sidebar = ({socket, dtRoom, setDtRoom, setMessAll, listOnline, roomName, l
                     </div>
                 </div>
                 <div className="d-flex flex-column justify-content-end">
+                    <MDBBtn className='frame-btn-avatar d-flex justify-content-center align-items-center'>
+                        <input
+                            className='file-input'
+                            type="file"
+                            onChange={handleChangeImage}
+                            accept=".png,.jpg,.jpeg"
+                        />
+                        Cập nhật ảnh
+                        <MDBIcon icon="user-circle" className="ml-1"/>
+                    </MDBBtn>
                     <MDBBtn
-                        className="z-depth-0 m-o px-3 py-2 mb-2"
+                        className="py-2 my-2 d-flex justify-content-center align-items-center"
                         onClick={() => handleLeaveRoom()}
                         disabled={roomName === ""}
                     >
                         Rời phòng <MDBIcon icon="angle-double-right" className="ml-1"/>
                     </MDBBtn>
                     <MDBBtn
-                        className="z-depth-0 m-o px-3 py-2"
+                        className="d-flex justify-content-center align-items-center py-2"
                         color="primary"
                         onClick={() => setIsOpenModal(true)}
                     >

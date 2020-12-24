@@ -1,0 +1,19 @@
+.sidebar-right {
+  .ant-drawer-content {
+    background-color: #f3f9fa;
+  }
+
+  .ant-drawer-header {
+    background-color: #f3f9fa;
+    border-bottom: 2px solid #62664e;
+  }
+
+  .avatar-group {
+
+    > div {
+      width: 120px;
+      height: 120px;
+      overflow: hidden;
+    }
+  }
+}

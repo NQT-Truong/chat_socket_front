@@ -2,16 +2,32 @@
   position: fixed;
   top: 0;
   left: - 260px;;
-  height: 100vh;
+  max-height: 100vh;
+  min-height: 100vh;
   width: 260px;;
-  //background-image: url('/img/background/sidebar-background.jpg');
-  background-size: cover;
+  background-size: auto;
   color: white;
   padding: 15px;
   overflow: auto;
 
   &::-webkit-scrollbar {
     display: none;
+  }
+
+  .scroll-card {
+    max-height: 100vh - 55;
+  }
+
+  .frame-btn-avatar {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+
+    .file-input {
+      opacity: 0;
+      position: absolute;
+      z-index: 2;
+      cursor: pointer;
+    }
   }
 
   transition: left .3s;

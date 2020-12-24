@@ -10,16 +10,15 @@ import {
 import {notification} from 'antd';
 
 import {useSelector, shallowEqual, useDispatch} from "react-redux";
+import {toggleSidebar} from "../../Redux/Actions/appActions";
 
 import io from "socket.io-client";
 import apiMess from "../../Api/Message/Message";
 import apiListUser from "../../Api/ListUserRoom/ListUser";
 import Sidebar from "../../Component/Layouts/Sidebar/Sidebar";
-
-import {toggleSidebar} from "../../Redux/Actions/appActions";
 import Main from "../../Component/Layouts/Main/Main";
 import Content from "../../Component/Layouts/Content/Content";
-
+import SidebarRight from "./SidebarRight";
 
 const Dashboard = () => {
 
@@ -36,6 +35,8 @@ const Dashboard = () => {
     const [dtRoom, setDtRoom] = useState("");
     const [roomName, setRoomName] = useState("");
     const [listUserInRoom, setListUserInRoom] = useState([]);
+    const [avatar, setAvatar] = useState("");
+    const [isVisible, setIsVisible] = useState(false);
 
     const scrollToBottom = () => {
         const elm = document.getElementById("temp")
@@ -43,6 +44,10 @@ const Dashboard = () => {
     };
 
     // lifecycle
+    useEffect(() => {
+        setAvatar(user.avatar)
+    },[user]);
+
     useEffect(() => {
         if (roomName === '') return null;
         scrollToBottom()
@@ -64,7 +69,10 @@ const Dashboard = () => {
             setRoomName(dt)
         })
 
-        socket.emit("Sign", user.username);
+        socket.emit("Sign", {
+            username: user.username,
+            avatar: user.avatar
+        });
 
         socket.on("list_online", (dt) => {
             setListOnline(dt)
@@ -103,7 +111,7 @@ const Dashboard = () => {
                 ])
             })
         })
-    }, [user.username])
+    }, [user])
 
     useEffect(() => {
         if (roomName === '') return setMessAll([]);
@@ -167,7 +175,11 @@ const Dashboard = () => {
 
     const handleToggleSidebar = React.useCallback(() => {
         dispatch(toggleSidebar());
-    }, [dispatch])
+    }, [dispatch]);
+
+    const handleCloseModal = () => {
+        setIsVisible(false);
+    }
     //_________________________________//
 
     return (
@@ -175,23 +187,22 @@ const Dashboard = () => {
             <Main>
                 <Content>
                     <MDBCol className="dashboard_page justify-content-between flex-column">
-                        <MDBBtn className='bg-white round btn-toggle-sidebar my-1' color='light' onClick={handleToggleSidebar}>
-                            <MDBIcon icon="bars" className="text-default"/>
-                        </MDBBtn>
-                        <div className="d-flex mb-1 justify-content-center">
-                            <div className="mb-1">
-                                <div className="d-flex justify-content-between align-items-center">
-                                    <div>Tài khoản: <span style={{fontWeight: "bold", fontSize: "16px"}} className="ml-2">{user.username}</span></div>
-                                    {/*<MDBIcon icon="user-circle" size='lg'/>*/}
-                                </div>
-                                <div className='d-flex justify-content-between align-items-center'>
-                                    <div>
-                                        Mã phòng: <span style={{fontWeight: "bold", fontSize: "16px"}} className="ml-2">{roomName}</span>
-                                    </div>
-                                    {/*<MDBIcon icon="key" size='lg'/>*/}
-                                </div>
-                            </div>
+                        <SidebarRight
+                            isVisible={isVisible}
+                            onClose={handleCloseModal}
+                            avatar={avatar}
+                            roomName={roomName}
+                            username={user.username}
+                        />
+                        <div className='d-flex  my-2'>
+                            <MDBBtn className='bg-white round btn-toggle-sidebar' color='light' onClick={handleToggleSidebar}>
+                                <MDBIcon icon="bars" className="text-default"/>
+                            </MDBBtn>
+                            <MDBBtn className='bg-white round btn-toggle-sidebar ml-2' color='light' onClick={() => setIsVisible(true)}>
+                                <MDBIcon icon="info-circle" className="text-default" size='1x'/>
+                            </MDBBtn>
                         </div>
+
                         <MDBRow className="justify-content-center">
                             <MDBCol className="pt-2" lg={8} sm={12}>
                                 <div className="d-flex justify-content-center">
@@ -265,6 +276,8 @@ const Dashboard = () => {
                 listUserInRoom={listUserInRoom}
                 setListUserInRoom={setListUserInRoom}
                 setRoomName={setRoomName}
+                avatar={avatar}
+                setAvatar={setAvatar}
             />
         </div>
     )
