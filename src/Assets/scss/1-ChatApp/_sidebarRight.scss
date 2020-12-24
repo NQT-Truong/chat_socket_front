@@ -8,6 +8,12 @@
     border-bottom: 2px solid #62664e;
   }
 
+  .ant-drawer-body {
+    justify-content: space-between;
+    display: flex;
+    flex-direction: column;
+  }
+
   .avatar-group {
 
     > div {
