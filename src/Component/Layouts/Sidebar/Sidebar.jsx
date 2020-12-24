@@ -21,7 +21,7 @@ import Notify from "../../../Utils/Notify/Notify";
  * @returns {*}
  * @constructor
  */
-const Sidebar = ({socket, dtRoom, setDtRoom, setMessAll, listOnline, roomName, listUserInRoom, setRoomName, setListUserInRoom, avatar, setAvatar}) => {
+const Sidebar = ({socket, dtRoom, setDtRoom, setMessAll, listOnline, roomName, avatar, listUserInRoom, setRoomName, setListUserInRoom, setAvatar}) => {
 
     const app = useSelector(state => state.app);
     const user = useSelector(state => state.user, shallowEqual);
@@ -48,7 +48,7 @@ const Sidebar = ({socket, dtRoom, setDtRoom, setMessAll, listOnline, roomName, l
             roomName: dtRoom,
             user: {
                 username: user.username,
-                avatar: user.avatar,
+                avatar: avatar,
                 uuid: user.uuid
             }
         });
@@ -191,7 +191,8 @@ const Sidebar = ({socket, dtRoom, setDtRoom, setMessAll, listOnline, roomName, l
                                                             {data.name}
                                                             <Avatar
                                                                 className='bg-white d-flex justify-content-center align-items-center'
-                                                                src={<Image src={data.avatar ? `${data.avatar}` : logo}/>}
+                                                                src={<Image
+                                                                    src={data.avatar ? `${data.avatar}` : logo}/>}
                                                             />
                                                         </div>
                                                     )
@@ -227,7 +228,8 @@ const Sidebar = ({socket, dtRoom, setDtRoom, setMessAll, listOnline, roomName, l
                                                         <span className="text-white">{data.username}</span>
                                                         <Avatar
                                                             className='bg-white d-flex justify-content-center align-items-center'
-                                                            src={<Image src={data.avatar ? `${data.avatar}` : logo}/>}
+                                                            // src={<Image src={data.avatar ? `${data.avatar}` : logo}/>}
+                                                            src={logo}
                                                         />
                                                     </div>
                                                 ))
